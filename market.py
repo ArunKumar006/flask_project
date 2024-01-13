@@ -18,16 +18,6 @@ class Item(db.Model):
     def __repr__(self):
         return f'Item {self.name}'
 
-
-    def __init__(self, name, price, barcode, description):
-        self.name = name
-        self.barcode =barcode
-        self.price = price
-        self.description =description
-        db.session.add(self)
-        db.session.commit()
-        return self
-
 @app.route("/")
 @app.route("/home")
 def home_page():
