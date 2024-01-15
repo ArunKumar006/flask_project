@@ -1,4 +1,4 @@
-from market import db,login_manager
+from market import db, login_manager
 from market import bcrypt
 from flask_login import UserMixin
 
@@ -31,6 +31,11 @@ class User(db.Model, UserMixin):
         print(self.password_hash, "password", attempted_password)
         return bcrypt.check_password_hash(self.password_hash, attempted_password)
 
+    def can_purchase(self, item_obj):
+        return self.budget >= item_obj.price
+
+    def can_sell(self, item_obj):
+        return item_obj.owner == self.id
 
 class Item(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
@@ -42,3 +47,13 @@ class Item(db.Model):
 
     def __repr__(self):
         return f'Item {self.name}'
+
+    def buy(self, user):
+        self.owner = user.id
+        user.budget -= self.price
+        db.session.commit()
+
+    def sell(self, user):
+        self.owner = None
+        user.budget += self.price
+        db.session.commit()
