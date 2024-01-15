@@ -2,8 +2,8 @@ from market import app
 from flask import render_template,url_for,redirect,flash
 from market.models import Item
 from market.forms import RegistrationForm
-
-
+from .models import User
+from market import db
 @app.route('/')
 @app.route('/home')
 def home():
@@ -21,7 +21,7 @@ def register_page():
     form = RegistrationForm()
     if form.validate_on_submit():
         user_to_create = User(username=form.username.data,
-                              email=form.email.data,
+                              email_address=form.email_address.data,
                               password_hash=form.password2.data)
         db.session.add(user_to_create)
         db.session.commit()
